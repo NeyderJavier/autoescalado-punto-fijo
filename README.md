@@ -4,6 +4,10 @@
 
 Proyecto de **Análisis Numérico**, Ingeniería de Sistemas, Universidad Simón Bolívar.
 
+### 👉 [Abrir la app en el navegador](https://neyderjavier.github.io/autoescalado-punto-fijo/) (no requiere instalar nada)
+
+> La primera carga tarda entre 20 y 60 segundos porque Python se ejecuta dentro del navegador. Funciona en Chrome, Edge y Safari.
+
 Cuando el tráfico de una aplicación crece, hay que decidir cuántos servidores encender. Si son pocos, se saturan y la app se cae. Si son muchos, se paga de más. Este proyecto calcula el número de servidores necesario para que trabajen al **80 %** de su capacidad, resolviendo una ecuación no lineal con el método de Punto Fijo.
 
 ![Pantalla principal](docs/img/pantalla_simple.png)
