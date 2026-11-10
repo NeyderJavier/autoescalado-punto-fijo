@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Redirigiendo…</title>
+  <script>
+    // Cualquier dirección que no exista vuelve al inicio de la app.
+    var partes = location.pathname.split("/").filter(Boolean);
+    location.replace("/" + (partes.length ? partes[0] + "/" : ""));
+  </script>
+</head>
+<body style="font-family:system-ui,sans-serif;text-align:center;padding-top:80px">
+  <p>Redirigiendo a la app… Si no pasa nada, <a href="./">haz clic aquí</a>.</p>
+</body>
+</html>
