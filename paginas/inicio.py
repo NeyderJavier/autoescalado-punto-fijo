@@ -1,8 +1,24 @@
+import io
+
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 
 from problemas import CARRO
+
+@st.cache_data(show_spinner=False)
+def figura_inicio():
+    fig, ax = plt.subplots(figsize=(6, 3.6), dpi=95)
+    x = np.linspace(CARRO.a, CARRO.b, 300)
+    ax.fill_between(x, CARRO.f(x), color="#2563eb", alpha=.25)
+    ax.plot(x, CARRO.f(x), color="#111827", lw=2)
+    ax.text(32, 11, "área = distancia\nrecorrida", ha="center", fontsize=12, color="#1e3a8a")
+    ax.set_xlabel(CARRO.eje_x); ax.set_ylabel(CARRO.eje_y)
+    ax.spines[["top", "right"]].set_visible(False)
+    fig.tight_layout()
+    buf = io.BytesIO(); fig.savefig(buf, format="png"); plt.close(fig)
+    return buf.getvalue()
+
 
 st.title("∫ Integración Numérica")
 st.markdown("##### Aprende tres formas de calcular el **área bajo una curva**: Trapecio, Simpson 1/3 y Simpson 3/8.")
@@ -20,14 +36,7 @@ with c1:
     )
     st.latex(r"\int_a^b f(x)\,dx = \text{área bajo la curva}")
 with c2:
-    fig, ax = plt.subplots(figsize=(6, 3.6), dpi=110)
-    x = np.linspace(CARRO.a, CARRO.b, 300)
-    ax.fill_between(x, CARRO.f(x), color="#2563eb", alpha=.25)
-    ax.plot(x, CARRO.f(x), color="#111827", lw=2)
-    ax.text(32, 11, "área = distancia\nrecorrida", ha="center", fontsize=12, color="#1e3a8a")
-    ax.set_xlabel(CARRO.eje_x); ax.set_ylabel(CARRO.eje_y)
-    ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout(); st.pyplot(fig); plt.close(fig)
+    st.image(figura_inicio())
 
 # ¿Por qué numérica? ----------------------------------------------------------
 st.header("¿Por qué hacerlo numéricamente?")

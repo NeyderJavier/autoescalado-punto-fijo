@@ -15,6 +15,11 @@ import streamlit as st
 
 st.set_page_config(page_title="Integración Numérica", page_icon="∫", layout="wide")
 
+# Oculta el menú ⋮ de Streamlit (viene en inglés y no hace falta para la clase)
+st.markdown("""<style>
+#MainMenu, [data-testid="stMainMenu"], [data-testid="stStatusWidget"], footer {display: none !important;}
+</style>""", unsafe_allow_html=True)
+
 CARPETA = Path(__file__).parent / "paginas"
 MODULOS = {
     "🏠 Inicio": "inicio.py",

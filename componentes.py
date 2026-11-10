@@ -1,4 +1,6 @@
 """Piezas de pantalla que usan los tres módulos (para no repetir código)."""
+import io
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
@@ -37,17 +39,30 @@ def elegir_n(metodo, p, minimo, paso, maximo, clave):
     return n
 
 
-def grafica(p, metodo, n):
-    fig = dibujar(p, metodo.NOMBRE, n)
-    st.pyplot(fig)
+@st.cache_data(max_entries=300, show_spinner=False)
+def _imagen(titulo, metodo_nombre, n, hasta=None):
+    """Dibuja la gráfica UNA sola vez y la guarda; las siguientes veces se reutiliza."""
+    p = next(p for p in TODOS if p.titulo == titulo)
+    fig = dibujar(p, metodo_nombre, n, hasta=hasta)
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=95)
     plt.close(fig)
+    return buf.getvalue()
+
+
+def imagen(p, metodo, n, hasta=None):
+    with st.spinner("Dibujando…"):
+        st.image(_imagen(p.titulo, metodo.NOMBRE, n, hasta))
+
+
+def grafica(p, metodo, n):
+    imagen(p, metodo, n)
 
 
 def paso_a_paso(p, metodo, n):
     filas, h, suma, resultado = metodo.paso_a_paso(p.f, p.a, p.b, n)
     df = pd.DataFrame(filas)
-    st.dataframe(df.style.format({"x_i": "{:g}", "f(x_i)": "{:.6f}", "c · f(x_i)": "{:.6f}"}),
-                 hide_index=True, use_container_width=True, height=min(38 * (len(df) + 1) + 4, 420))
+    st.dataframe(df.round(6), hide_index=True, use_container_width=True, height=min(38 * (len(df) + 1) + 4, 420))
     factor = {"h/2": f"{h:g}/2", "h/3": f"{h:g}/3", "3h/8": f"3·{h:g}/8"}[metodo.FACTOR]
     st.markdown(f"**Suma de la última columna:** {suma:,.6f}")
     st.markdown(f"**Resultado:** {metodo.FACTOR} × suma = {factor} × {suma:,.6f} = **{resultado:,.6f}**")
@@ -67,6 +82,11 @@ def resultado(p, aprox):
                    f"el método se equivoca en un {rel:.3f} %.")
 
 
+# st.fragment hace que los botones de la animación solo recarguen esta sección
+_fragmento = getattr(st, "fragment", lambda f: f)
+
+
+@_fragmento
 def animacion(p, metodo, n, clave):
     """Muestra las figuras una por una y cómo se va sumando el área."""
     paso = {"Trapecio": 1, "Simpson 1/3": 2, "Simpson 3/8": 3}[metodo.NOMBRE]
@@ -99,12 +119,8 @@ def animacion(p, metodo, n, clave):
 
     b[4].markdown(f"**{nombre.capitalize()} {k} de {total}** · área acumulada: "
                   f"**{acumulada:,.4f} {p.unidad}**")
-    fig = dibujar(p, metodo.NOMBRE, n, hasta=k)
-    st.pyplot(fig)
-    plt.close(fig)
-    st.dataframe(pd.DataFrame(filas).style.format({"desde x": "{:g}", "hasta x": "{:g}",
-                                                   f"área de la {nombre}": "{:,.4f}", "área acumulada": "{:,.4f}"}),
-                 hide_index=True, use_container_width=True)
+    imagen(p, metodo, n, hasta=k)
+    st.dataframe(pd.DataFrame(filas).round(4), hide_index=True, use_container_width=True)
     if k == total:
         st.success(f"Sumando las {total} figuras se obtiene **{acumulada:,.6f} {p.unidad}**, "
                    "el mismo resultado de la fórmula completa.")
