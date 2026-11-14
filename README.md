@@ -6,7 +6,12 @@ Proyecto de **Análisis Numérico**, Ingeniería de Sistemas, Universidad Simón
 
 > La primera carga tarda entre 20 y 60 segundos porque Python se ejecuta dentro del navegador. Funciona en Chrome, Edge y Safari.
 
-Una app didáctica con **tres módulos**, uno por método. Cada módulo explica la idea, resuelve un problema de la vida real, dibuja las figuras que aproximan el área, las anima **figura por figura** y hace el cálculo **paso a paso**, como en el cuaderno.
+Una app didáctica con **tres módulos**, uno por método. Cada módulo explica la idea, plantea un problema de la vida real y lo resuelve de dos formas:
+
+- **Versión corta (regla simple):** una sola figura en todo el intervalo (n = 1, 2 o 3).
+- **Versión extendida (regla compuesta):** el intervalo dividido en n franjas.
+
+Las dos se resuelven **paso a paso**, como en el tablero: (1) calcular h, (2) ubicar los puntos, (3) evaluar la función, (4) reemplazar en la fórmula, (5) operar y (6) calcular el error. Al final se comparan las dos versiones y se anima la extendida **figura por figura**.
 
 ---
 
